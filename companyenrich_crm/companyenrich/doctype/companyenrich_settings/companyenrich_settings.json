@@ -1,0 +1,18 @@
+{
+ "doctype": "DocType",
+ "name": "CompanyEnrich Settings",
+ "module": "CompanyEnrich",
+ "issingle": 1,
+ "engine": "InnoDB",
+ "track_changes": 1,
+ "field_order": ["enabled", "api_key", "help"],
+ "fields": [
+  {"fieldname": "enabled", "fieldtype": "Check", "label": "Enable CompanyEnrich", "default": "0"},
+  {"fieldname": "api_key", "fieldtype": "Password", "label": "API Key", "description": "Stored using Frappe password encryption. Never sent to the browser."},
+  {"fieldname": "help", "fieldtype": "HTML", "options": "<p>CompanyEnrich provides company and professional-profile research APIs. Save your key, then grant the CompanyEnrich User role only to users who may spend this account's credits. Calls run only when a user presses Run or Fill missing fields.</p><p><a href='https://companyenrich.com' target='_blank' rel='noopener'>CompanyEnrich</a> · <a href='https://docs.companyenrich.com/reference' target='_blank' rel='noopener'>API documentation</a></p>"}
+ ],
+ "permissions": [{"role": "System Manager", "read": 1, "write": 1, "create": 1}],
+ "actions": [],
+ "links": [],
+ "states": []
+}

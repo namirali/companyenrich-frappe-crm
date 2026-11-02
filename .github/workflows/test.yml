@@ -1,0 +1,78 @@
+name: Tests
+on:
+  pull_request:
+  push:
+    branches: [main, 'codex/**']
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install -e '.[test]'
+      - run: ruff check . && ruff format --check .
+      - run: pytest -q
+      - run: node --test tests/ui.test.cjs
+      - run: python -m build
+  frappe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - frappe: version-15
+            python: '3.12'
+          - frappe: version-16
+            python: '3.14'
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: test-only
+          MARIADB_ROOT_HOST: '%'
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmariadb-dev pkg-config libldap2-dev libsasl2-dev redis-server
+          npm install -g yarn
+          pip install frappe-bench
+      - name: Initialize framework
+        run: |
+          bench init --skip-assets --skip-redis-config-generation --frappe-branch '${{ matrix.frappe }}' --python "$(which python)" /tmp/ce-bench
+          cd /tmp/ce-bench
+          bench set-config -g redis_cache redis://127.0.0.1:6379/0
+          bench set-config -g redis_queue redis://127.0.0.1:6379/1
+          bench set-config -g redis_socketio redis://127.0.0.1:6379/2
+          bench get-app --skip-assets --branch v1.91.1 https://github.com/frappe/crm
+          bench get-app --skip-assets "$GITHUB_WORKSPACE"
+      - name: Install and test app
+        run: |
+          cd /tmp/ce-bench
+          bench new-site test_site --db-host 127.0.0.1 --db-root-password test-only --admin-password test-only --mariadb-user-host-login-scope='%'
+          bench --site test_site install-app crm
+          bench --site test_site install-app companyenrich_crm
+          bench --site test_site set-config allow_tests true
+          bench --site test_site run-tests --app companyenrich_crm
