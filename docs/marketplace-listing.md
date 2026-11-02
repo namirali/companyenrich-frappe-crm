@@ -18,7 +18,7 @@ Research companies and professional people profiles, find similar companies, ins
 
 ## Full description
 
-CompanyEnrich provides company enrichment, company search, lookalikes, professional people profiles and workforce intelligence through an API. This app adds a CompanyEnrich action to Frappe CRM Leads and Organizations, plus a dedicated research page with twelve explicit API operations.
+CompanyEnrich provides company enrichment, company search, lookalikes, professional people profiles and workforce intelligence through an API. This app adds a CompanyEnrich action to Frappe CRM Leads and Organizations, plus a dedicated research page with sixteen explicit API operations.
 
 Administrators configure an encrypted API key and assign a spending role. Users review parameters before running requests, see reported credit usage, and can separately confirm filling missing profile fields. Existing values, lifecycle status, ownership, consent and contact information are preserved. Record permissions and concurrent edits are checked before applying data.
 

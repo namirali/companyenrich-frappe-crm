@@ -40,7 +40,7 @@ def prepare(operation, parameters):
     if len(encoded.encode()) > MAX_REQUEST:
         raise ValueError("Request is too large")
     parameters = json.loads(encoded)
-    if operation == "get_person" and isinstance(parameters, dict):
+    if operation in {"get_person", "person_education"} and isinstance(parameters, dict):
         query = parameters.get("query", {})
         if isinstance(query, dict) and isinstance(query.get("id"), str) and query["id"].isdigit():
             query["id"] = int(query["id"])

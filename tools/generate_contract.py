@@ -5,6 +5,30 @@ import sys
 from pathlib import Path
 
 OPS = {
+    "person_education": (
+        "GET",
+        "/people/education",
+        "Get person education",
+        {"query": {"id": "9007199254740993"}},
+    ),
+    "autocomplete_companies": (
+        "GET",
+        "/companies/autocomplete",
+        "Autocomplete company domain (free)",
+        {"query": {"query": "example"}},
+    ),
+    "preview_companies": (
+        "POST",
+        "/companies/search/preview",
+        "Preview company search (Scale plan)",
+        {"body": {"query": "example"}},
+    ),
+    "preview_similar": (
+        "POST",
+        "/companies/similar/preview",
+        "Preview similar companies (Scale plan)",
+        {"body": {"domains": ["example.com"]}},
+    ),
     "enrich_company": (
         "GET",
         "/companies/enrich",
@@ -118,7 +142,11 @@ def main(source):
             "method": method,
             "path": path,
             "label": label,
-            "cost": operation.get("description", "").split("\n\n")[0].replace("**", ""),
+            "cost": " ".join(
+                part.replace("**", "")
+                for part in operation.get("description", "").split("\n\n")
+                if part.startswith(("**Cost:", "**Requirements:", "**Notice:"))
+            ),
             "schema": schema,
             "example": example,
         }

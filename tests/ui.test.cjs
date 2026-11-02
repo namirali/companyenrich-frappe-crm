@@ -55,7 +55,7 @@ test('research page makes no paid request on load and renders provider data as t
   await wrapper.companyenrichLoad();
   assert.equal(calls.length, 1);
   assert.equal(calls[0].method, 'companyenrich_crm.api.get_context');
-  assert.equal(elements.find((element) => element.tag === 'select').children.length, 12);
+  assert.equal(elements.find((element) => element.tag === 'select').children.length, 16);
   const params = elements.find((element) => element.tag === 'textarea');
   params.value = '{"query":{"id":"9007199254740993"}}';
   await elements.find((element) => element.textContent === 'Run request').listeners.click();

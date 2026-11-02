@@ -22,6 +22,7 @@ class TestIntegration(FrappeTestCase):
                 "doctype": "CRM Organization",
                 "organization_name": "CE fixture " + frappe.generate_hash(length=10),
                 "website": "https://example.com",
+                "no_of_employees": "",
             }
         ).insert()
         self.original_modified = str(self.organization.modified)
