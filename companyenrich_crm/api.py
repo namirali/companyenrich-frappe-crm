@@ -28,6 +28,14 @@ def reference(doctype, name, write=False, for_update=False):
     return doc
 
 
+def visible_value(doc, field):
+    # The record check alone does not grant access to a custom protected field.
+    # Keep source identifiers on the same conservative permlevel-0 boundary as
+    # target profile fields; do not reveal or send hidden emails/websites.
+    meta = doc.meta.get_field(field)
+    return doc.get(field) if meta and not meta.permlevel else None
+
+
 def client():
     settings = frappe.get_single("CompanyEnrich Settings")
     if not settings.enabled:
@@ -69,8 +77,8 @@ def get_context(doctype=None, name=None):
             "doctype": doctype,
             "name": name,
             "modified": str(doc.modified),
-            "domain": domain_from_url(doc.get("website")),
-            "email": doc.get("email") if doctype == "CRM Lead" else None,
+            "domain": domain_from_url(visible_value(doc, "website")),
+            "email": visible_value(doc, "email") if doctype == "CRM Lead" else None,
             "can_write": doc.has_permission("write"),
         }
     return result
@@ -98,12 +106,12 @@ def enrich_document(doctype, name, modified, kind="company"):
     if not modified or get_datetime(doc.modified) != get_datetime(modified):
         frappe.throw(_("This record has changed. Reload it before enrichment"), frappe.TimestampMismatchError)
     if kind == "company":
-        domain = domain_from_url(doc.get("website"))
+        domain = domain_from_url(visible_value(doc, "website"))
         if not domain:
             frappe.throw(_("Save a company website on this record before enriching it"))
         operation, parameters = "enrich_company", {"query": {"domain": domain, "waitForEnrichment": False}}
-    elif kind == "person" and doctype == "CRM Lead" and doc.get("email"):
-        operation, parameters = "lookup_person", {"body": {"email": doc.email}}
+    elif kind == "person" and doctype == "CRM Lead" and visible_value(doc, "email"):
+        operation, parameters = "lookup_person", {"body": {"email": visible_value(doc, "email")}}
     else:
         frappe.throw(_("Person enrichment requires an existing CRM Lead email"))
     result = provider_call(lambda: client().query(operation, parameters))

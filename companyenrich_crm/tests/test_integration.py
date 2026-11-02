@@ -149,3 +149,11 @@ class TestIntegration(FrappeTestCase):
             "test-placeholder-never-a-live-key",
         )
         self.assertNotIn("test-placeholder-never-a-live-key", str(api.get_context()))
+
+    def test_protected_source_field_is_not_exposed_or_sent(self):
+        with patch.object(self.organization.meta.get_field("website"), "permlevel", 1):
+            context = api.get_context("CRM Organization", self.organization.name)
+            self.assertIsNone(context["reference"]["domain"])
+            with patch.object(api, "client") as client, self.assertRaises(frappe.ValidationError):
+                api.enrich_document("CRM Organization", self.organization.name, self.original_modified)
+            client.assert_not_called()
