@@ -3,14 +3,19 @@
 from unittest.mock import patch
 
 import frappe
-from frappe.tests.utils import FrappeTestCase
 
 from companyenrich_crm import api
 from companyenrich_crm.install import SCRIPT_PREFIX, sync_scripts
 
+try:
+    from frappe.tests import IntegrationTestCase as FrappeTestCase
+except ImportError:  # Frappe 15
+    from frappe.tests.utils import FrappeTestCase
+
 
 class TestIntegration(FrappeTestCase):
     def setUp(self):
+        super().setUp()
         frappe.set_user("Administrator")
         self.organization = frappe.get_doc(
             {
@@ -23,6 +28,7 @@ class TestIntegration(FrappeTestCase):
 
     def tearDown(self):
         frappe.set_user("Administrator")
+        super().tearDown()
 
     def test_installed_settings_page_and_scripts(self):
         self.assertTrue(frappe.db.exists("Page", "companyenrich-research"))
