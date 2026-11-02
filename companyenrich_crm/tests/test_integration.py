@@ -20,7 +20,7 @@ class TestIntegration(FrappeTestCase):
         self.organization = frappe.get_doc(
             {
                 "doctype": "CRM Organization",
-                "organization_name": "CompanyEnrich integration fixture",
+                "organization_name": "CE fixture " + frappe.generate_hash(length=10),
                 "website": "https://example.com",
             }
         ).insert()
@@ -103,3 +103,46 @@ class TestIntegration(FrappeTestCase):
             frappe.db.get_value("CRM Organization", self.organization.name, "company_description"),
             "Concurrent human edit",
         )
+
+    def test_signed_in_user_without_spending_role_cannot_request(self):
+        user = frappe.get_doc(
+            {
+                "doctype": "User",
+                "email": "ce-" + frappe.generate_hash(length=10) + "@example.com",
+                "first_name": "Fixture",
+                "send_welcome_email": 0,
+                "roles": [{"role": "Sales User"}],
+            }
+        ).insert(ignore_permissions=True)
+        frappe.set_user(user.name)
+        self.assertFalse(api.has_access())
+        with patch.object(api, "client") as client, self.assertRaises(frappe.PermissionError):
+            api.query("search_people", '{"body":{"domains":["example.com"]}}')
+        client.assert_not_called()
+
+    def test_spending_role_does_not_grant_crm_record_permissions(self):
+        user = frappe.get_doc(
+            {
+                "doctype": "User",
+                "email": "ce-" + frappe.generate_hash(length=10) + "@example.com",
+                "first_name": "Fixture",
+                "send_welcome_email": 0,
+                "roles": [{"role": "CompanyEnrich User"}],
+            }
+        ).insert(ignore_permissions=True)
+        frappe.set_user(user.name)
+        self.assertTrue(api.has_access())
+        with patch.object(api, "client") as client, self.assertRaises(frappe.PermissionError):
+            api.enrich_document("CRM Organization", self.organization.name, self.original_modified)
+        client.assert_not_called()
+
+    def test_password_is_encrypted_and_not_in_context(self):
+        settings = frappe.get_single("CompanyEnrich Settings")
+        settings.api_key = "test-placeholder-never-a-live-key"
+        settings.save()
+        self.assertEqual(settings.get_password("api_key"), "test-placeholder-never-a-live-key")
+        self.assertNotEqual(
+            frappe.db.get_single_value("CompanyEnrich Settings", "api_key"),
+            "test-placeholder-never-a-live-key",
+        )
+        self.assertNotIn("test-placeholder-never-a-live-key", str(api.get_context()))
