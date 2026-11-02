@@ -42,7 +42,9 @@ class TestIntegration(FrappeTestCase):
             self.assertIn("class " + doctype.replace(" ", ""), script.script)
             self.assertIn("/app/companyenrich-research?", script.script)
         frappe.db.set_value("CRM Form Script", SCRIPT_PREFIX + "CRM Lead", "enabled", 0)
+        page_modified = frappe.db.get_value("Page", "companyenrich-research", "modified")
         sync_scripts()
+        self.assertNotEqual(frappe.db.get_value("Page", "companyenrich-research", "modified"), page_modified)
         self.assertEqual(frappe.db.get_value("CRM Form Script", SCRIPT_PREFIX + "CRM Lead", "enabled"), 0)
 
     def test_guest_cannot_spend(self):

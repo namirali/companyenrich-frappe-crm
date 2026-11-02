@@ -32,6 +32,11 @@ def sync_scripts():
                 }
             ).insert(ignore_permissions=True)
 
+    # Desk caches page scripts by the Page modified timestamp. Refresh it when
+    # upgrading JavaScript even if the page's JSON metadata did not change.
+    if frappe.db.exists("Page", "companyenrich-research"):
+        frappe.db.set_value("Page", "companyenrich-research", "modified", frappe.utils.now_datetime())
+
 
 def after_install():
     sync_scripts()
