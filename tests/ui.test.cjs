@@ -65,4 +65,8 @@ test('research page makes no paid request on load and renders provider data as t
   assert.match(output.textContent, /<img src=x onerror=alert\(1\)>/);
   assert.equal(output.innerHTML, undefined);
   assert.ok(elements.some((element) => element.textContent === 'Reported credits: 0'));
+  frappe.call = async () => { throw {responseJSON: {_server_messages: JSON.stringify([JSON.stringify({message: 'CompanyEnrich is disabled'})])}}; };
+  await elements.find((element) => element.textContent === 'Run request').listeners.click();
+  assert.ok(elements.some((element) => element.textContent.includes('CompanyEnrich is disabled')));
+  assert.equal(params.disabled, false);
 });

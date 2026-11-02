@@ -58,14 +58,25 @@ frappe.pages['companyenrich-research'].on_page_load = function (wrapper) {
     if (busy) return;
     busy = true;
     run.disabled = true;
+    select.disabled = true;
+    parameters.disabled = true;
     profileButtons.querySelectorAll('button').forEach((button) => button.disabled = true);
     status.textContent = __('Request in progress…');
     result.textContent = '';
     try { display(await action()); }
-    catch (_) { status.textContent = __('Request did not complete. Review the error above; requests are never automatically retried.'); }
+    catch (error) {
+      let detail = '';
+      try {
+        const messages = JSON.parse(error.responseJSON?._server_messages || '[]');
+        detail = messages.map((entry) => JSON.parse(entry).message).filter((message) => typeof message === 'string').join(' ');
+      } catch (_) { /* Never display raw exceptions or response bodies. */ }
+      status.textContent = (detail ? detail + ' ' : '') + __('Request did not complete; requests are never automatically retried.');
+    }
     finally {
       busy = false;
       run.disabled = false;
+      select.disabled = false;
+      parameters.disabled = false;
       profileButtons.querySelectorAll('button').forEach((button) => button.disabled = false);
     }
   };
@@ -85,6 +96,9 @@ frappe.pages['companyenrich-research'].on_page_load = function (wrapper) {
     if (busy) return;
     const query = new URLSearchParams(window.location.search);
     context = null;
+    result.textContent = '';
+    referenceLabel.textContent = '';
+    parameters.value = '';
     run.disabled = true;
     select.replaceChildren();
     profileButtons.replaceChildren();
