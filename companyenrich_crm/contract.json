@@ -2805,136 +2805,6 @@
     }
   },
   "operations": {
-    "person_education": {
-      "method": "GET",
-      "path": "/people/education",
-      "label": "Get person education",
-      "cost": "Cost: 1 credit per successful call",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "integer",
-                "format": "int64"
-              }
-            },
-            "additionalProperties": false,
-            "required": [
-              "id"
-            ]
-          }
-        },
-        "required": [
-          "query"
-        ],
-        "additionalProperties": false
-      },
-      "example": {
-        "query": {
-          "id": "9007199254740993"
-        }
-      }
-    },
-    "autocomplete_companies": {
-      "method": "GET",
-      "path": "/companies/autocomplete",
-      "label": "Autocomplete company domain (free)",
-      "cost": "Cost: FREE - No credits deducted",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "object",
-            "properties": {
-              "query": {
-                "type": "string"
-              }
-            },
-            "additionalProperties": false,
-            "required": [
-              "query"
-            ]
-          }
-        },
-        "required": [
-          "query"
-        ],
-        "additionalProperties": false
-      },
-      "example": {
-        "query": {
-          "query": "example"
-        }
-      }
-    },
-    "preview_companies": {
-      "method": "POST",
-      "path": "/companies/search/preview",
-      "label": "Preview company search (Scale plan)",
-      "cost": "Cost: FREE - No credits deducted Requirements: Requires Scale plans Notice: Returns top 25 results only",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "object",
-            "properties": {},
-            "additionalProperties": false,
-            "required": []
-          },
-          "body": {
-            "$ref": "#/$defs/CompanySearchInput"
-          }
-        },
-        "required": [
-          "body"
-        ],
-        "additionalProperties": false
-      },
-      "example": {
-        "body": {
-          "query": "example"
-        }
-      }
-    },
-    "preview_similar": {
-      "method": "POST",
-      "path": "/companies/similar/preview",
-      "label": "Preview similar companies (Scale plan)",
-      "cost": "Cost: FREE - No credits deducted Requirements: Requires Scale plans Notice: Returns top 25 results only",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "object",
-            "properties": {
-              "waitForEnrichment": {
-                "type": "boolean",
-                "default": true
-              }
-            },
-            "additionalProperties": false,
-            "required": []
-          },
-          "body": {
-            "$ref": "#/$defs/CompanySimilarInput2"
-          }
-        },
-        "required": [
-          "body"
-        ],
-        "additionalProperties": false
-      },
-      "example": {
-        "body": {
-          "domains": [
-            "example.com"
-          ]
-        }
-      }
-    },
     "enrich_company": {
       "method": "GET",
       "path": "/companies/enrich",
@@ -3410,6 +3280,136 @@
       "example": {
         "query": {
           "domain": "example.com"
+        }
+      }
+    },
+    "person_education": {
+      "method": "GET",
+      "path": "/people/education",
+      "label": "Get person education",
+      "cost": "Cost: 1 credit per successful call",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ]
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "example": {
+        "query": {
+          "id": "9007199254740993"
+        }
+      }
+    },
+    "autocomplete_companies": {
+      "method": "GET",
+      "path": "/companies/autocomplete",
+      "label": "Autocomplete company domain (free)",
+      "cost": "Cost: FREE - No credits deducted",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "query"
+            ]
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "example": {
+        "query": {
+          "query": "example"
+        }
+      }
+    },
+    "preview_companies": {
+      "method": "POST",
+      "path": "/companies/search/preview",
+      "label": "Preview company search (Scale plan)",
+      "cost": "Cost: FREE - No credits deducted Requirements: Requires Scale plans Notice: Returns top 25 results only",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false,
+            "required": []
+          },
+          "body": {
+            "$ref": "#/$defs/CompanySearchInput"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      },
+      "example": {
+        "body": {
+          "query": "example"
+        }
+      }
+    },
+    "preview_similar": {
+      "method": "POST",
+      "path": "/companies/similar/preview",
+      "label": "Preview similar companies (Scale plan)",
+      "cost": "Cost: FREE - No credits deducted Requirements: Requires Scale plans Notice: Returns top 25 results only",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "waitForEnrichment": {
+                "type": "boolean",
+                "default": true
+              }
+            },
+            "additionalProperties": false,
+            "required": []
+          },
+          "body": {
+            "$ref": "#/$defs/CompanySimilarInput2"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      },
+      "example": {
+        "body": {
+          "domains": [
+            "example.com"
+          ]
         }
       }
     }
