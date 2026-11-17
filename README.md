@@ -49,7 +49,7 @@ People search returns professional profiles, **not email addresses**. Person loo
 
 Preview endpoints require a Scale plan and return at most 25 results. Autocomplete and previews run only when selected and explicitly requested.
 
-The contract was generated from the [public OpenAPI schema](https://api.companyenrich.com/openapi/v1.json) on 2026-11-02. API documentation and current pricing remain authoritative: [docs.companyenrich.com](https://docs.companyenrich.com). The app does not implement asynchronous bulk/scroll/export/list administration or beta email/jobs/advertising APIs.
+The contract was generated from the [public OpenAPI schema](https://api.companyenrich.com/openapi/v1.json) on 2026-11-17. API documentation and current pricing remain authoritative: [docs.companyenrich.com](https://docs.companyenrich.com). The app does not implement asynchronous bulk/scroll/export/list administration or beta email/jobs/advertising APIs.
 
 ## Fill missing profile fields
 

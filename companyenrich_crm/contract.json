@@ -1,6 +1,6 @@
 {
   "source": "https://api.companyenrich.com/openapi/v1.json",
-  "checked": "2026-11-02",
+  "checked": "2026-11-17",
   "$defs": {
     "BatchEnrichRequest": {
       "required": [
@@ -28,7 +28,8 @@
         "media",
         "service-provider",
         "mobile",
-        "saas"
+        "saas",
+        "local-business"
       ]
     },
     "CompanyEmployees": {

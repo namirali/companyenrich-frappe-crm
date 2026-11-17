@@ -169,7 +169,7 @@ def main(source):
     collect(operations)
     output = {
         "source": "https://api.companyenrich.com/openapi/v1.json",
-        "checked": "2026-11-02",
+        "checked": "2026-11-17",
         "$defs": {name: defs[name] for name in sorted(referenced)},
         "operations": operations,
     }
